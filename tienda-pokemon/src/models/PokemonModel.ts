@@ -1,4 +1,4 @@
-// PokemonModel.ts
+// models/PokemonModel.ts
 import { Pokemon } from "./Pokemon";
 
 export class PokemonModel {

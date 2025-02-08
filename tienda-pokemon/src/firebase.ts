@@ -4,13 +4,12 @@ import {
     collection,
     getDocs,
     addDoc,
-    updateDoc,
     deleteDoc,
     doc,
     query,
     where
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, signOut, type User } from "firebase/auth";
+import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDL4RiEmTV8XrHu2ZwjJ1KMCFWNBk1AnFc",
@@ -44,15 +43,6 @@ class ConectToFirebase {
 // Método para verificar el estado de autenticación
     onAuthStateChanged(callback: (user: User | null) => void) {
         return onAuthStateChanged(this.auth, callback);
-    }
-
-// Método para cerrar sesión
-    async signOut() {
-        try {
-        await signOut(this.auth);
-    } catch (error) {
-        console.error("Error al cerrar sesión: ", error);
-        }
     }
 
 // Crear un nuevo documento asociado al usuario
@@ -162,4 +152,4 @@ class ConectToFirebase {
 
 }
 
-export default ConectToFirebase;
+export {ConectToFirebase, app, db, auth};

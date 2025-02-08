@@ -1,13 +1,11 @@
-import { initializeApp, type FirebaseApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, type Auth, type UserCredential } from "firebase/auth";
+import { type FirebaseApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, type Auth, type UserCredential } from "firebase/auth";
 
-export default class UserAuth {
-    private app: FirebaseApp;
+export class UserAuth {
     private auth: Auth;
 
-    constructor(firebaseConfig: any) {
-        this.app = initializeApp(firebaseConfig);
-        this.auth = getAuth(this.app);
+    constructor(app: FirebaseApp) {
+        this.auth = getAuth(app);
     }
 
     async login(email: string, password: string): Promise<UserCredential> {
@@ -27,6 +25,14 @@ export default class UserAuth {
         } catch (error) {
             console.error("Error en el registro", error);
             throw error;
+        }
+    }
+
+    async signOut() {
+        try {
+            await signOut(this.auth);
+        } catch (error) {
+            console.error("Error al cerrar sesión: ", error);
         }
     }
 }
