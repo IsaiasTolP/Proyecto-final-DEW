@@ -23,18 +23,19 @@
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import { useRouter } from 'vue-router';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/firebase.ts';
+import { app } from '@/firebase.ts';
+import { UserAuth } from '@/services/auth.ts';
 import { ref } from 'vue';
 
 const email = ref('');
 const password = ref('');
+const userAuthentication = new UserAuth(app);
 
 const router = useRouter();
 
 const signIn = async () => {
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+        const userCredential = await userAuthentication.login(email.value, password.value);
         const token = await userCredential.user.getIdToken();
         localStorage.setItem('token', token);
         router.push('/');

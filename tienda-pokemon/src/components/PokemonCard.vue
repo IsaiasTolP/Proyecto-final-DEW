@@ -37,26 +37,25 @@
                 {{ type.type.name }}
             </span>
         </div>
+        <!-- Carrito -->
+        <div class="mt-4">
+            <button
+                @click="addPokemonToCart"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+                Add to Cart
+            </button>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, defineProps } from 'vue';
+import { useCartStore } from '@/stores/CartStore';
+import type { Pokemon } from '@/models/Pokemon.ts';
 
-interface Pokemon {
-    id: number;
-    name: string;
-    attack: number;
-    price: number;
-    weight: number;
-    pkm_back?: string;
-    pkm_front?: string;
-    pkm_type: { type: { name: string } }[];
-}
-
-const props = defineProps<{
-    pokemon: Pokemon;
-    }>();
+    const props = defineProps<{pokemon: Pokemon;}>();
+    const cartStore = useCartStore();
 
     // Variable reactiva para detectar si el ratón está sobre el contenedor
     const isHovered = ref(false);
@@ -68,4 +67,9 @@ const props = defineProps<{
         }
     return props.pokemon.pkm_front;
     });
+
+    // Función para añadir un Pokémon al carrito
+    const addPokemonToCart = () => {
+        cartStore.addToCart(props.pokemon);
+    };
 </script>

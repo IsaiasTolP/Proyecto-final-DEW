@@ -4,12 +4,11 @@ import {
     collection,
     getDocs,
     addDoc,
-    deleteDoc,
-    doc,
     query,
-    where
+    where,
+    CollectionReference,
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
+import { getAuth, onAuthStateChanged, type User, type Auth } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDL4RiEmTV8XrHu2ZwjJ1KMCFWNBk1AnFc",
@@ -24,132 +23,74 @@ const app = initializeApp(firebaseConfig);
 
 // Inicializa Firestore
 const db = getFirestore(app);
-const auth = getAuth(app);
+const auth: Auth = getAuth(app);
 
-class ConectToFirebase {
-    private collectionRef;
-    private buyCollection;
-    private auth;
+export interface PurchaseData {
+    userId: string;
+    createdAt: Date;
+    pokemonIds: number[];
+    pokemons: string[];
+    total: number;
+}
+
+class ConnectToFirebase {
+    public auth: Auth;
+    private buyCollection: CollectionReference<PurchaseData>;
     constructor() {
-        this.collectionRef = collection(db, "pokemon");
-        this.buyCollection = collection(db, "compras");
+        this.buyCollection = collection(db, "compras") as CollectionReference<PurchaseData>;
         this.auth = auth;
     }
 
+    // Método para obtener el usuario actual
     getCurrentUser (): User | null {
         return this.auth.currentUser ;
     }
 
-// Método para verificar el estado de autenticación
+    // Método para verificar el estado de autenticación
     onAuthStateChanged(callback: (user: User | null) => void) {
         return onAuthStateChanged(this.auth, callback);
     }
 
-// Crear un nuevo documento asociado al usuario
-    async create(data) {
+    // Crea una compra con los datos especificados.
+    // Se añadirá el ID del usuario actual..
+    async createPurchase(data: PurchaseData): Promise<string> {
         const user = this.auth.currentUser;
         if (!user) {
             throw new Error("Usuario no autenticado");
         }
-// Comprobar si ese pokemon ya esta en la lista de deseos
-    const existingQuery = query(this.collectionRef, where("id", "==", data.id), where("userId", "==", user.uid));
-    const existingDocs = await getDocs(existingQuery);
-
-    if (!existingDocs.empty) {
-        console.warn(`Pokemon con ID ${data.id} ya existe en la base de datos.`);
-        return null;
-    }
-
-    try {
-        const docRef = await addDoc(this.collectionRef, data);
-        return docRef.id;
-    } catch (e) {
-        console.error("Error añadiendo documento: ", e);
-        throw e;
-    }
-}
-
-    async createPurchase(data){
-        const user = this.auth.currentUser;
-        if (!user) {
-            throw new Error("Usuario no autenticado");
-        }
-    try {
-        const docRef = await addDoc(this.buyCollection, data);
-        return docRef.id;
-    } catch (e) {
-        console.error("Error añadiendo documento: ", e);
-        throw e;
-    }
-}
-
-// Recupera la lista de deseos del usuario
-    async readAll() {
-        const user = this.auth.currentUser;
-        if (!user) {
-        throw new Error("Usuario no autenticado");
-    }
-
-    try {
-        const q = query(this.collectionRef, where("userId", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-
-        const dataList = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-
-        return dataList;
-        } catch (e) {
-            console.error("Error obteniendo documentos: ", e);
-            throw e;
-        }
-    }
-// Recupera todas las compras del usuario
-    async readAllPurchases() {
-        const user = this.auth.currentUser;
-        if (!user) {
-            throw new Error("Usuario no autenticado");
-        }
-
-    try {
-        const q = query(this.buyCollection, where("userId", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-
-        const dataList = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-
-        return dataList;
-        } catch (e) {
-            console.error("Error obteniendo documentos: ", e);
-            throw e;
-        }
-    }
-
-// Eliminar un documento por ID
-    async delete(id) {
         try {
-            const user = this.auth.currentUser;
-            if (!user) {
-                throw new Error("Usuario no autenticado");
-            }
-        const q = query(this.collectionRef, where("id", "==", id), where("userId", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-            const docRef = doc(this.collectionRef, querySnapshot.docs[0].id);
-            await deleteDoc(docRef);
-        } else {
-            console.warn(`No se encontró un Pokémon con ID: ${id} para el usuario actual.`);
-            throw new Error("No se encontró el Pokémon para eliminar.");
+            const PurchaseData: PurchaseData = {
+                ...data,
+                userId: user.uid,
+            };
+            const docRef = await addDoc(this.buyCollection, PurchaseData);
+            return docRef.id;
+        } catch (e) {
+            console.error("Error añadiendo documento: ", e);
+            throw e;
         }
-    } catch (e) {
-        console.error("Error eliminando documento: ", e);
-        throw e;
+    }
+
+    // Recupera todas las compras del usuario
+    async readAllPurchases(): Promise<(PurchaseData & { id: string })[]> {
+        const user = this.auth.currentUser;
+        if (!user) {
+            throw new Error("Usuario no autenticado");
+        }
+
+        try {
+            const q = query(this.buyCollection, where("userId", "==", user.uid));
+            const querySnapshot = await getDocs(q);
+            const dataList = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            return dataList;
+        } catch (e) {
+            console.error("Error obteniendo documentos: ", e);
+            throw e;
+        }
     }
 }
 
-}
-
-export {ConectToFirebase, app, db, auth};
+export {ConnectToFirebase, app, db, auth};
