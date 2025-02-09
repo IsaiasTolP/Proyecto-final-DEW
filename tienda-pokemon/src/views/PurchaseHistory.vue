@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div v-else class="text-center text-gray-600">
-                No purchases yet.
+                {{ $t('history.noPurchases') }}
             </div>
         </div>
     </div>

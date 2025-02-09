@@ -24,6 +24,18 @@ const messages = {
             date: 'Date',
             purchasedPokemons: 'Purchased Pokemons',
             total: 'Total price',
+            noPurchases: 'You have not made any purchases yet',
+        },
+        login: {
+            welcome: 'Welcome',
+            welcomeBack: 'Welcome back',
+            haveAccount: 'Already have an account?',
+            noAccount: "Don't have an account?",
+            createToday: 'Create one today!',
+            signInHere: 'Sign in here',
+            email: 'Email',
+            password: 'Password',
+            confirmPwd: 'Confirm password',
         }
     },
     es: {
@@ -49,6 +61,18 @@ const messages = {
             date: 'Fecha',
             purchasedPokemons: 'Pokemons comprados',
             total: 'Precio total',
+            noPurchases: 'Aún no has realizado ninguna compra',
+        },
+        login: {
+            welcome: 'Bienvenido',
+            welcomeBack: 'Bienvenido de vuelta',
+            haveAccount: '¿Ya tienes una cuenta?',
+            noAccount: '¿No tienes una cuenta?',
+            createToday: '¡Crea una hoy!',
+            signInHere: 'Inicia sesión aquí',
+            email: 'Correo electrónico',
+            password: 'Contraseña',
+            confirmPwd: 'Confirmar contraseña',
         }
     },
 };

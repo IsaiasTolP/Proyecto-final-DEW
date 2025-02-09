@@ -26,8 +26,8 @@ const db = getFirestore(app);
 const auth: Auth = getAuth(app);
 
 export interface PurchaseData {
-    userId: string;
-    createdAt: Date;
+    userId: string | undefined;
+    createdAt: string;
     pokemonIds: number[];
     pokemons: string[];
     total: number;
@@ -61,7 +61,6 @@ class ConnectToFirebase {
         try {
             const PurchaseData: PurchaseData = {
                 ...data,
-                userId: user.uid,
             };
             const docRef = await addDoc(this.buyCollection, PurchaseData);
             return docRef.id;

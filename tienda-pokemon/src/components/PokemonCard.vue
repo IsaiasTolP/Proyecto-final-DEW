@@ -13,7 +13,6 @@
         <!-- Contenedor para la imagen con eventos de hover -->
         <div @mouseover="isHovered = true" @mouseleave="isHovered = false">
             <img
-            v-if="displayedImage"
             :src="displayedImage"
             :alt="`${pokemon.name} ${isHovered ? 'back' : 'front'} view`"
             class="w-full object-contain mb-4"
@@ -54,6 +53,7 @@ import { ref, computed, defineProps } from 'vue';
 import { useCartStore } from '@/stores/CartStore';
 import type { Pokemon } from '@/models/Pokemon.ts';
 
+    // Usamos defineProps para recibir el Pokémon como propiedad, es decir, desde el componente padre, podemos pasar un Pokémon al componente y acceder a él con "props.pokemon" o simplemente "pokemon"
     const props = defineProps<{pokemon: Pokemon;}>();
     const cartStore = useCartStore();
 
@@ -65,7 +65,7 @@ import type { Pokemon } from '@/models/Pokemon.ts';
         if (isHovered.value && props.pokemon.pkm_back) {
             return props.pokemon.pkm_back;
         }
-    return props.pokemon.pkm_front;
+        return props.pokemon.pkm_front;
     });
 
     // Función para añadir un Pokémon al carrito

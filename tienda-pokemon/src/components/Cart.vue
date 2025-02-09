@@ -61,8 +61,9 @@ import { ConnectToFirebase } from '@/firebase.ts';
     const buyItems = async () => {
         try {
             const purchaseData = {
+                userId: firebaseService.auth.currentUser?.uid,
                 pokemons: cartItems.map(item => item.name),
-                pokemonsIds: cartItems.map(item => item.id),
+                pokemonIds: cartItems.map(item => item.id),
                 total: calculateTotal(),
                 createdAt: new Date().toISOString(),
             };

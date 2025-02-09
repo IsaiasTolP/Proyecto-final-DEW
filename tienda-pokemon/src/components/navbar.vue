@@ -29,9 +29,9 @@
 </template>
 
 <script lang="ts">
+import { ConnectToFirebase, app } from '@/firebase.ts';
 import { defineComponent, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { ConnectToFirebase, app } from '@/firebase.ts';
 import { UserAuth } from '@/services/auth.ts';
 import Cart from '@/components/Cart.vue';
 import LangSwitcher from '@/components/LangSwitcher.vue';
