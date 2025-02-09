@@ -1,115 +1,150 @@
-import { describe, it, expect, vi } from 'vitest';
-import { Pokemon } from '@/models/Pokemon.ts';
-import PokemonFilter from '@/components/PokemonFilter.vue';
-import { usePokemonStore } from '@/stores/PokemonStore.ts';
-import { mount } from '@vue/test-utils';
+// FilterComponent.spec.ts
+import { describe, it, expect, beforeEach } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { createTestingPinia } from '@pinia/testing'
+import { usePokemonStore } from '@/stores/PokemonStore'
+import FilterComponent from '@/components/PokemonFilter.vue'
+import type { Pokemon } from '@/models/Pokemon'
 
+// Mock de i18n
+const mocks = {
+  $t: (key: string) => key.split('.').pop()
+}
 
-// Creamos una función mock para los Pokémon
-const mockPokemons = [
-  new Pokemon({
-    name: 'Pikachu',
-    id: 1,
-    stats: [{ base_stat: 55 }],
-    weight: 60,
-    sprites: {
-      front_default: 'pikachu-front.png',
-      back_default: 'pikachu-back.png',
+describe('FilterComponent', () => {
+  const mockPokemons: Partial<Pokemon>[] = [
+    {
+      id: 1,
+      name: 'Charizard',
+      weight: 90,
+      attack: 84,
+      pkm_type: [{ type: { name: 'fire' } }, { type: { name: 'flying' } }]
     },
-    types: [{ type: { name: 'electric' } }],
-  }),
-  new Pokemon({
-    name: 'Bulbasaur',
-    id: 2,
-    stats: [{ base_stat: 49 }],
-    weight: 69,
-    sprites: {
-      front_default: 'bulbasaur-front.png',
-      back_default: 'bulbasaur-back.png',
+    {
+      id: 2,
+      name: 'Blastoise',
+      weight: 85,
+      attack: 83,
+      pkm_type: [{ type: { name: 'water' } }]
     },
-    types: [{ type: { name: 'grass' } }],
-  }),
-  new Pokemon({
-    name: 'Charmander',
-    id: 3,
-    stats: [{ base_stat: 52 }],
-    weight: 85,
-    sprites: {
-      front_default: 'charmander-front.png',
-      back_default: 'charmander-back.png',
-    },
-    types: [{ type: { name: 'fire' } }],
-  }),
-];
+    {
+      id: 3,
+      name: 'Venusaur',
+      weight: 100,
+      attack: 82,
+      pkm_type: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }]
+    }
+  ]
 
-// Mock del store de Pokémon para usar en nuestras pruebas
-vi.mock('@/stores/PokemonStore.ts', () => {
-  return {
-    usePokemonStore: vi.fn().mockReturnValue({
-      pokemons: mockPokemons,
-      loadPokemons: vi.fn(),
-    }),
-  };
-});
+  let wrapper: any
+  let pokemonStore: ReturnType<typeof usePokemonStore>
+  let filteredPokemons: { value: Pokemon[] }
 
-describe('PokemonFilter', () => {
-  it('filtra por tipo correctamente', async () => {
-    const { getByLabelText, emitted } = mount(PokemonFilter);
+  beforeEach(() => {
+    filteredPokemons = { value: [] }
+    
+    wrapper = mount(FilterComponent, {
+      global: {
+        plugins: [createTestingPinia()],
+        mocks,
+        provide: {
+          filteredPokemons
+        }
+      }
+    })
 
-    // Simulamos un filtro por tipo (por ejemplo, "electric")
-    const filterInput = getByLabelText('Type');
-    await filterInput.setValue('electric');
+    pokemonStore = usePokemonStore()
+    pokemonStore.pokemons = mockPokemons
+  })
 
-    // Verificamos que los Pokémon filtrados tengan el tipo 'electric'
-    const store = usePokemonStore();
-    const filteredPokemons = store.pokemons.filter((pokemon) =>
-      pokemon.pkm_type.some((type) => type.type.name.includes('electric'))
-    );
-    expect(filteredPokemons.length).toBe(1);
-    expect(filteredPokemons[0].name).toBe('Pikachu');
-  });
+  describe('Renderizado inicial', () => {
+    it('muestra todos los campos de filtro', () => {
+      expect(wrapper.find('#filterType').exists()).toBe(true)
+      expect(wrapper.find('#filterWeight').exists()).toBe(true)
+      expect(wrapper.find('#filterPower').exists()).toBe(true)
+    })
 
-  it('filtra por peso correctamente', async () => {
-    const { getByLabelText } = mount(PokemonFilter);
+    it('muestra los labels correctamente', () => {
+      expect(wrapper.text()).toContain('title')
+      expect(wrapper.text()).toContain('type')
+      expect(wrapper.text()).toContain('minWeight')
+      expect(wrapper.text()).toContain('minAttack')
+    })
+  })
 
-    // Filtramos por peso mayor o igual a 70
-    const weightInput = getByLabelText('Minimum Weight');
-    await weightInput.setValue('70');
+  describe('Funcionalidad de filtrado', () => {
+    it('filtra por tipo correctamente', async () => {
+      await wrapper.find('#filterType').setValue('fire')
+      expect(wrapper.vm.filterType).toBe('fire')
+      
+      const filtered = wrapper.vm.filteredList
+      expect(filtered.length).toBe(1)
+      expect(filtered[0].name).toBe('Charizard')
+    })
 
-    const store = usePokemonStore();
-    const filteredPokemons = store.pokemons.filter((pokemon) => pokemon.weight >= 70);
+    it('filtra por peso mínimo', async () => {
+      await wrapper.find('#filterWeight').setValue(85)
+      expect(wrapper.vm.filterWeight).toBe(85)
+      
+      const filtered = wrapper.vm.filteredList
+      expect(filtered.length).toBe(3)
+      expect(filtered.map((p: Pokemon) => p.name)).toEqual(['Charizard', 'Blastoise', 'Venusaur'])
+    })
 
-    // Verificamos que solo el Pokémon que pesa más de 70 esté en la lista
-    expect(filteredPokemons.length).toBe(2);
-    expect(filteredPokemons[0].name).toBe('Bulbasaur');
-    expect(filteredPokemons[1].name).toBe('Charmander');
-  });
+    it('filtra por ataque mínimo', async () => {
+      await wrapper.find('#filterPower').setValue(84)
+      expect(wrapper.vm.filterPower).toBe(84)
+      
+      const filtered = wrapper.vm.filteredList
+      expect(filtered.length).toBe(1)
+      expect(filtered[0].name).toBe('Charizard')
+    })
 
-  it('filtra por ataque correctamente', async () => {
-    const { getByLabelText } = mount(PokemonFilter);
+    it('combina múltiples filtros', async () => {
+      await wrapper.find('#filterType').setValue('poison')
+      await wrapper.find('#filterWeight').setValue(90)
+      await wrapper.find('#filterPower').setValue(80)
+      
+      const filtered = wrapper.vm.filteredList
+      expect(filtered.length).toBe(1)
+      expect(filtered[0].name).toBe('Venusaur')
+    })
+  })
 
-    // Filtramos por ataque mayor o igual a 50
-    const powerInput = getByLabelText('Minimum Attack');
-    await powerInput.setValue('50');
+  describe('Inyección de dependencias', () => {
+    it('actualiza la lista inyectada cuando cambian los filtros', async () => {
+      await wrapper.find('#filterType').setValue('water')
+      await wrapper.find('#filterWeight').setValue(80)
+      await wrapper.find('#filterPower').setValue(80)
+      
+      expect(filteredPokemons.value.length).toBe(1)
+      expect(filteredPokemons.value[0].name).toBe('Blastoise')
+    })
+  })
 
-    const store = usePokemonStore();
-    const filteredPokemons = store.pokemons.filter((pokemon) => pokemon.attack >= 50);
+  describe('Mensaje de no coincidencias', () => {
+    it('muestra el mensaje cuando no hay resultados', async () => {
+      await wrapper.find('#filterType').setValue('electric')
+      await wrapper.find('#filterWeight').setValue(200)
+      
+      expect(wrapper.vm.filteredList.length).toBe(0)
+      expect(wrapper.text()).toContain('noMatch')
+      expect(wrapper.find('.text-red-500').isVisible()).toBe(true)
+    })
 
-    // Verificamos que solo los Pokémon con ataque mayor o igual a 50 estén en la lista
-    expect(filteredPokemons.length).toBe(2);
-    expect(filteredPokemons[0].name).toBe('Pikachu');
-    expect(filteredPokemons[1].name).toBe('Charmander');
-  });
+    it('oculta el mensaje cuando hay resultados', async () => {
+      await wrapper.find('#filterType').setValue('fire')
+      expect(wrapper.find('.text-red-500').exists()).toBe(false)
+    })
+  })
 
-  it('muestra "No matching Pokémon found" cuando no haya coincidencias', async () => {
-    const { getByLabelText, getByText } = mount(PokemonFilter);
-
-    // Establecemos filtros que no coinciden con ningún Pokémon
-    const typeInput = getByLabelText('Type');
-    await typeInput.setValue('dragon');
-
-    // Verificamos que el mensaje de no coincidencias aparezca
-    const noMatchMessage = getByText('No matching Pokémon found');
-    expect(noMatchMessage).toBeInTheDocument();
-  });
-});
+  describe('Validación de tipos', () => {
+    it('maneja correctamente los tipos numéricos', async () => {
+      await wrapper.find('#filterWeight').setValue('invalid')
+      expect(wrapper.vm.filterWeight).toBe("")
+      
+      await wrapper.find('#filterPower').setValue('50')
+      expect(wrapper.vm.filterPower).toBe(50)
+    })
+  })
+})

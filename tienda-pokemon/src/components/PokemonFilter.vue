@@ -79,4 +79,4 @@ import { usePokemonStore } from '@/stores/PokemonStore.ts';
     watch(filteredList, (newVal) => {
         filteredPokemons.value = newVal;
     }, { immediate: true });
-    </script>
+</script>

@@ -85,7 +85,7 @@ describe('Navigation.vue', () => {
     await router.isReady();
   });
 
-  it('renders the component with login and register links when not logged in', () => {
+  it('Se renderizan los enlaces correspondientes dependiendo del estado de logueo', () => {
     // Por defecto, isLoggedIn es false
     expect(wrapper.find('.text-lg.font-bold').text()).toBe('logo');
 
@@ -106,7 +106,7 @@ describe('Navigation.vue', () => {
     expect(wrapper.find('span.text-green-400').exists()).toBe(false);
   });
 
-  it('renders the component with purchase history and logout button when logged in', async () => {
+  it('Se rendereizan los componentes que solo aparecen cuando se está logueado', async () => {
     // Forzamos el estado de "logueado"
     (wrapper.vm as any).isLoggedIn = true;
     await wrapper.vm.$nextTick();
@@ -133,7 +133,7 @@ describe('Navigation.vue', () => {
 
   const flushPromises = () => new Promise(resolve => setTimeout(resolve, 0));
 
-  it('calls logout function when logout button is clicked', async () => {
+  it('Se llama a la función de logout cuando se hace click', async () => {
     // Forzamos el estado "logueado"
     (wrapper.vm as any).isLoggedIn = true;
     await wrapper.vm.$nextTick();
@@ -157,7 +157,7 @@ describe('Navigation.vue', () => {
   });
 
 
-  it('toggles dark mode correctly', async () => {
+  it('Se activa el modo oscuro correctamente', async () => {
     const buttons = wrapper.findAll('button');
     expect(buttons.length).toBe(1);
     const darkModeButton = buttons[0];

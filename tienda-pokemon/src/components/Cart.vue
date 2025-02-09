@@ -42,6 +42,7 @@ import { ConnectToFirebase } from '@/firebase.ts';
     const cartItems = cartStore.items;
     const isOpen = ref(false);
 
+    // Desplegable del carrito
     const toggleCart = () => {
         isOpen.value = !isOpen.value;
     };
@@ -58,6 +59,7 @@ import { ConnectToFirebase } from '@/firebase.ts';
         return parseFloat(cartItems.reduce((total, item) => total + item.price, 0).toFixed(2));
     }
 
+    // Función para realizar una compra de pokemons
     const buyItems = async () => {
         try {
             const purchaseData = {

@@ -34,9 +34,9 @@ describe('LoginForm.vue', () => {
     });
   };
 
-  it('renders labels and inputs with initial props', () => {
+  it('Se renderizan correctamente tanto los labels como los inputs', () => {
     const wrapper = factory({ email: 'test@example.com', password: 'secret' });
-    // Verifica que se rendericen los labels (usando la key de traducción)
+    // Verifica que se rendericen los labels usando la key de traducción
     expect(wrapper.html()).toContain('login.email');
     expect(wrapper.html()).toContain('login.password');
 
@@ -46,7 +46,7 @@ describe('LoginForm.vue', () => {
     expect(inputs[1].element.value).toBe('secret');
   });
 
-  it('emits update:email when email input changes', async () => {
+  it('Se activa el emit update:email cuando cambia su estado', async () => {
     const wrapper = factory({ email: 'old@example.com' });
     // El primer input corresponde al email
     const emailInput = wrapper.findAll('input')[0];
@@ -58,7 +58,7 @@ describe('LoginForm.vue', () => {
     expect(emailEvents && emailEvents[0]).toEqual(['new@example.com']);
   });
 
-  it('emits update:password when password input changes', async () => {
+  it('eSe activa el emit update:password cuando cambia su estado', async () => {
     const wrapper = factory({ password: 'oldpass' });
     // El segundo input corresponde al password
     const inputs = wrapper.findAll('input');
@@ -71,7 +71,7 @@ describe('LoginForm.vue', () => {
     expect(passwordEvents && passwordEvents[0]).toEqual(['newpass']);
   });
 
-  it('renders slot content', () => {
+  it('Se renderiza el contenido del slot correctamente', () => {
     const slotContent = '<div class="custom-slot">Extra Content</div>';
     const wrapper = factory({}, { default: slotContent });
     const slotElement = wrapper.find('.custom-slot');

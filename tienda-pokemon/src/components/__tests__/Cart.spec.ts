@@ -3,17 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Cart from '@/components/Cart.vue';
 import { createPinia, setActivePinia } from 'pinia';
 import { useCartStore } from '@/stores/CartStore';
-
-type CartItem = {
-  id: number;
-  name: string;
-  attack: number;
-  price: number;
-  weight: number;
-  pkm_front: string;
-  pkm_back: string;
-  pkm_type: { type: { name: string } }[];
-};
+import type { Pokemon } from '@/models/Pokemon';
 
 vi.mock('@/firebase.ts', () => ({
   ConnectToFirebase: class {
@@ -55,7 +45,7 @@ describe('Cart.vue', () => {
         pkm_back: 'charmander_back.png',
         pkm_type: [{ type: { name: 'Fire' } }],
       },
-    ] as CartItem[];
+    ] as Pokemon[];
   });
 
   it('muestra el número de ítems en el carrito', async () => {

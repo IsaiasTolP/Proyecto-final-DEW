@@ -49,7 +49,7 @@ describe('PokemonCard.vue', () => {
     wrapper = mount(PokemonCard, options);
   });
 
-  it('renders the component with correct data', () => {
+  it('Se renderizan los componentes con los datos correctamente', () => {
     expect(wrapper.text()).toContain('stats.attack: 50');
     expect(wrapper.text()).toContain('100€');
     expect(wrapper.text()).toContain('stats.weight: 60');
@@ -57,7 +57,7 @@ describe('PokemonCard.vue', () => {
     expect(wrapper.text()).toContain('Electric');
   });
 
-  it('changes image on hover', async () => {
+  it('Se cambia la imagen al recibir un hover', async () => {
     const img = wrapper.find('img');
     expect(img.attributes('src')).toBe('https://example.com/pikachu-front.png');
 
@@ -66,7 +66,7 @@ describe('PokemonCard.vue', () => {
     expect(img.attributes('src')).toBe('https://example.com/pikachu-back.png');
   });
 
-  it('adds the Pokemon to the cart when the button is clicked', async () => {
+  it('Se añade el pokemon al carrito cuando se hace click en el botón', async () => {
     const button = wrapper.find('button');
     await button.trigger('click');
     expect(mockAddToCart).toHaveBeenCalledWith(mockPokemon);
