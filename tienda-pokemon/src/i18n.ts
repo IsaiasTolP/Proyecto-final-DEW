@@ -36,6 +36,13 @@ const messages = {
             email: 'Email',
             password: 'Password',
             confirmPwd: 'Confirm password',
+        },
+        filter: {
+            title: 'Filter pokemons',
+            type: 'Type',
+            minWeight: 'Minimum weight',
+            minAttack: 'Minimum attack',
+            noMatch: 'No matching Pokémon found',
         }
     },
     es: {
@@ -73,6 +80,13 @@ const messages = {
             email: 'Correo electrónico',
             password: 'Contraseña',
             confirmPwd: 'Confirmar contraseña',
+        },
+        filter: {
+            title: 'Filtrar pokemons',
+            type: 'Tipo',
+            minWeight: 'Peso mínimo',
+            minAttack: 'Ataque mínimo',
+            noMatch: 'No hay pokemon que coincida',
         }
     },
 };
