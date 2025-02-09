@@ -1,10 +1,10 @@
 <template>
     <navigation />
     <div class="container mx-auto px-4 py-6">
-        <h1 class="text-2xl font-bold mb-4">Historial de Compras</h1>
+        <h1 class="text-2xl font-bold mb-4">{{ $t('purchaseHistory') }}</h1>
 
         <div v-if="loading" class="text-center text-gray-600">
-            Cargando compras...
+            {{ $t('history.loadingMsg') }}
         </div>
         <div v-else>
             <div v-if="purchases.length > 0">
@@ -13,10 +13,10 @@
                     :key="purchase.id" 
                     class="border p-4 mb-4 rounded shadow-sm"
                 >
-                    <p><strong>Purchase ID:</strong> {{ purchase.id }}</p>
-                    <p><strong>Date:</strong> {{ formatDate(purchase.createdAt) }}</p>
-                    <p><strong>Purchased Pokemons:</strong> {{ purchase.pokemons.join(', ') }}</p>
-                    <p><strong>Total price:</strong> {{ purchase.total }}€</p>
+                    <p><strong>{{ $t('history.purchaseId') }}:</strong> {{ purchase.id }}</p>
+                    <p><strong>{{ $t('history.date') }}:</strong> {{ formatDate(purchase.createdAt) }}</p>
+                    <p><strong>{{ $t('history.purchasedPokemons') }}:</strong> {{ purchase.pokemons.join(', ') }}</p>
+                    <p><strong>{{ $t('history.total') }}:</strong> {{ purchase.total }}€</p>
                 </div>
             </div>
             <div v-else class="text-center text-gray-600">

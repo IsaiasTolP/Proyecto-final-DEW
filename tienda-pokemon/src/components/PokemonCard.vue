@@ -3,7 +3,7 @@
         <!-- Encabezado con datos de ataque y precio -->
         <div class="flex justify-between items-center mb-4">
             <div class="text-sm font-medium text-gray-600">
-                Attack: {{ pokemon.attack }}
+                {{ $t('stats.attack') }}: {{ pokemon.attack }}
             </div>
             <div class="text-lg font-bold text-green-600">
                 {{ pokemon.price }}€
@@ -24,7 +24,7 @@
         <div class="mb-4">
             <span class="text-sm text-gray-500">{{ pokemon.id }}.</span>
             <h3 class="text-xl font-bold text-gray-800">{{ pokemon.name }}</h3>
-            <p class="text-sm text-gray-600">Weight: {{ pokemon.weight }}</p>
+            <p class="text-sm text-gray-600">{{ $t('stats.weight') }}: {{ pokemon.weight }}</p>
         </div>
 
         <!-- Tipos del Pokémon -->
@@ -43,7 +43,7 @@
                 @click="addPokemonToCart"
                 class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
-                Add to Cart
+            {{ $t('cart.addToCart') }}
             </button>
         </div>
     </div>

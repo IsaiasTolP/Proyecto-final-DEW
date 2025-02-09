@@ -19,14 +19,14 @@
                     <button @click="removeItem(item.id)" class="text-red-500">X</button>
                 </div>
                 <button @click="clearCart" class="mt-4 bg-red-500 text-white px-3 py-1 rounded w-full">
-                    Clear Cart
+                    {{ $t('cart.clearCart') }}
                 </button>
-                <button @click="buyItems" class="mt-4 bg-green-500 text-white px-4 py-2 rounded">
-                    Comprar
+                <button @click="buyItems" class="mt-4 bg-green-500 text-white px-4 py-2 rounded w-full">
+                    {{ $t('cart.buyItems') }}
                 </button>
             </div>
             <div v-else class="text-center text-gray-500">
-                Your cart is empty.
+                {{ $t('cart.empty') }}
             </div>
         </div>
     </div>

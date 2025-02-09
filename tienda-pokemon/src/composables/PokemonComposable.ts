@@ -1,7 +1,7 @@
-// models/PokemonModel.ts
-import { Pokemon } from "./Pokemon";
+// composables/PokemonModel.ts
+import { Pokemon } from "../models/Pokemon";
 
-export class PokemonModel {
+export class PokemonComposable {
     private pokemons: Pokemon[];
 
     constructor() {
