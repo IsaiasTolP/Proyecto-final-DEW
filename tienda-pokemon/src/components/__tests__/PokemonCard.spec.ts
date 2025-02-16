@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, type MountingOptions, type VueWrapper } from '@vue/test-utils';
-import PokemonCard from '@/components/PokemonCard.vue'; // Ajusta la ruta según sea necesario
+import PokemonCard from '@/components/PokemonCard.vue';
 import { createPinia, setActivePinia } from 'pinia';
-import type { Pokemon } from '@/models/Pokemon.ts'; // Ajusta la ruta según sea necesario
+import type { Pokemon } from '@/models/Pokemon.ts';
 
 // Mock para el store de carrito
 const mockAddToCart = vi.fn();
